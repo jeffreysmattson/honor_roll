@@ -80,18 +80,8 @@ function honor_roll_block_view($delta = '')
  *
  * @return html
  */
-function honor_roll_contents() {
-  $content = <<<EOT
-  <div class='weather form-inline'>
-    <input title="Enter your ZIP code." id="zipCode" name="weatherZIP" value="" size="25" maxlength="5" class="form-text" type="text" placeholder="ZIP Code" onkeyup="this.value=this.value.replace(/[^\d]/,'')">
-    <input id="getWeatherButton" name="op" value="Get" class="form-submit" type="submit">
-  </div>
-  <div id='js_weatherResults'>
-    <span id='js_weatherResultsTitle'></span>
-    <span id='js_weatherResultsTemp'></span>
-    <span id='js_weatherResultsText'></span>
-    <span id='js_weatherResultsLink'></span>
-  </div>
-EOT;
+function honor_roll_contents()
+{
+  $content = "Content will go here";
   return $content;
 }
