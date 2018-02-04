@@ -82,6 +82,6 @@ function honor_roll_block_view($delta = '')
  */
 function honor_roll_contents()
 {
-  $content = "Content will go here";
-  return $content;
+    $content = "Content will go here";
+    return $content;
 }
