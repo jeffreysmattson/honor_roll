@@ -1,0 +1,5 @@
+core = "7.x"
+description = "Honor Roll"
+name = "Honor Roll"
+
+configure = admin/settings/honor_roll

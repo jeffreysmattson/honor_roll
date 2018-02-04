@@ -1,0 +1,97 @@
+<?php
+/**
+ * @file
+ * Create the Honor Role.
+ */
+
+
+/**
+ * Implements hook_block_info().
+ *
+ * @return associative array
+ */
+function honor_roll_block_info()
+{
+    $blocks['honor_roll'] = array(
+        'info' => t('Honor Roll'),
+        'cache' => DRUPAL_CACHE_PER_ROLE,
+        'region' => 'Content',
+        'visibility' => BLOCK_VISIBILITY_LISTED,
+        'pages' => 'node/*'
+    );
+    return $blocks;
+}
+
+function honor_roll_admin()
+{
+    $form = array();
+    $form['honor_roll_api_key'] = array(
+        '#type' => 'textfield',
+        '#title' => t('API Key'),
+        '#default_value' => variable_get('honor_roll_api_key'),
+        '#size' => 50,
+        '#maxlength' => 200,
+        '#description' => t("The API key to connect to the Millennium endpoints."),
+        '#required' => true,
+    );
+    return system_settings_form($form);
+}
+
+/**
+ * Implements hook_menu()
+ * 
+ * @return array
+ */
+function honor_roll_menu()
+{
+    $items = array();
+    $items['admin/settings/honor_roll'] = array(
+        'title' => 'Honor Roll Module Settings',
+        'description' => 'Honor Roll API',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('honor_roll_admin'),
+        'access arguments' => array('administer honor roll settings'),
+        'type' => MENU_SUGGESTED_ITEM,
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * @return array    Contents and Subject.
+ */
+function honor_roll_block_view($delta = '')
+{
+    switch ($delta) {
+        case 'honor_roll':
+            $block['subject'] = t('Get Today&#8217;s Weather');
+            if (true == user_is_logged_in()) {
+                $block['content'] = honor_roll_contents();
+            } else {
+                $block['content'] = 'You must be logged in to view weather.';
+            }
+    }
+    return $block;
+}
+
+/**
+ * Build the honor roll element structure.
+ *
+ * @return html
+ */
+function honor_roll_contents() {
+  $content = <<<EOT
+  <div class='weather form-inline'>
+    <input title="Enter your ZIP code." id="zipCode" name="weatherZIP" value="" size="25" maxlength="5" class="form-text" type="text" placeholder="ZIP Code" onkeyup="this.value=this.value.replace(/[^\d]/,'')">
+    <input id="getWeatherButton" name="op" value="Get" class="form-submit" type="submit">
+  </div>
+  <div id='js_weatherResults'>
+    <span id='js_weatherResultsTitle'></span>
+    <span id='js_weatherResultsTemp'></span>
+    <span id='js_weatherResultsText'></span>
+    <span id='js_weatherResultsLink'></span>
+  </div>
+EOT;
+  return $content;
+}
