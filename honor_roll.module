@@ -22,16 +22,26 @@ function honor_roll_block_info()
     return $blocks;
 }
 
+/**
+ * Implements hook_admin().
+ *
+ * Creates the text input field for the settings page. Specifically the
+ * area where the file path to the CSV file which contains the honor roll
+ * data. This file will be read once a day and its contents will be cached.
+ * 
+ * @return array Settings form elements.
+ */
 function honor_roll_admin()
 {
     $form = array();
-    $form['honor_roll_api_key'] = array(
+    $currentPath = getcwd();
+    $form['honor_roll_csv_file_path'] = array(
         '#type' => 'textfield',
-        '#title' => t('API Key'),
-        '#default_value' => variable_get('honor_roll_api_key'),
+        '#title' => t('CSV File Path'),
+        '#default_value' => variable_get('honor_roll_csv_file_path'),
         '#size' => 50,
         '#maxlength' => 200,
-        '#description' => t("The API key to connect to the Millennium endpoints."),
+        '#description' => "The file path to the CSV file containing the honor roll data.<br>This file is read once a day and the contents cached.<br><br>"."Current directory: ".$currentPath,
         '#required' => true,
     );
     return system_settings_form($form);
@@ -47,7 +57,7 @@ function honor_roll_menu()
     $items = array();
     $items['admin/settings/honor_roll'] = array(
         'title' => 'Honor Roll Module Settings',
-        'description' => 'Honor Roll API',
+        'description' => 'Honor Roll CSV file path.',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('honor_roll_admin'),
         'access arguments' => array('administer honor roll settings'),
