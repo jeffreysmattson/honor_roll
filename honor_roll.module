@@ -4,6 +4,8 @@
  * Create the Honor Role.
  */
 
+/* CSV class */
+require_once ( dirname(__FILE__) . '/classes/HonorRollCSV.php');
 
 /**
  * Implements hook_block_info().
@@ -73,14 +75,18 @@ function honor_roll_menu()
  */
 function honor_roll_block_view($delta = '')
 {
+    $modulePath = drupal_get_path('module', 'honor_roll');
+    drupal_add_js($modulePath .'/js/main.js', array(
+        'scope' => 'footer'
+    ));
+    drupal_add_js('https://code.jquery.com/ui/1.12.1/jquery-ui.js', array(
+        'type' => 'external',
+        'scope' => 'footer'
+    ));
     switch ($delta) {
         case 'honor_roll':
-            $block['subject'] = t('Get Today&#8217;s Weather');
-            if (true == user_is_logged_in()) {
-                $block['content'] = honor_roll_contents();
-            } else {
-                $block['content'] = 'You must be logged in to view weather.';
-            }
+            $block['subject'] = t('Honor Roll');
+            $block['content'] = honor_roll_contents();
     }
     return $block;
 }
@@ -92,6 +98,43 @@ function honor_roll_block_view($delta = '')
  */
 function honor_roll_contents()
 {
-    $content = "Content will go here";
+    $columnNames = array(
+            'year'        => null,
+            'firstName'   => null,
+            'lastName'    => null,
+            'memberLevel' => null
+        );
+    $HonorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_csv_file_path'), $columnNames);
+    $content = honor_roll_html($HonorCSV->getArray());
     return $content;
 }
+
+/**
+ * Create the html accordions
+ */
+function honor_roll_html($arrayData)
+{
+    $arrayYears = array();
+
+    // Pull the years.
+    foreach ($arrayData as $csvLine) {
+        $arrayYears[] = $csvLine['year'];
+    }
+    $arrayYears = array_unique($arrayYears);
+
+    $content = '<div id="accordion">';
+    foreach ($arrayYears as $year) {
+        $content .= '<h3>'.$year.'</h3>';
+        $content .= '<div>
+        <p>
+        Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+        ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+        amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+        odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+        </p>
+      </div>';
+    }
+    $content .= '</div>';
+    return $content;
+}
+
