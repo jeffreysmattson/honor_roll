@@ -1,10 +1,12 @@
 <?php
+
 /**
  * @file
+ * 
  * Create the Honor Role.
  */
 
-/* CSV class */
+/* CSV class for reading CSV */
 require_once ( dirname(__FILE__) . '/classes/HonorRollCSV.php');
 
 /**
@@ -92,20 +94,45 @@ function honor_roll_block_view($delta = '')
 }
 
 /**
+ * Create cache table for honor roll module.
+ * 
+ * @return array
+ */
+function honor_roll_flush_caches()
+{
+    return array(
+        'honor_roll_cache',
+    );
+}
+
+/**
  * Build the honor roll element structure.
  *
  * @return html
  */
 function honor_roll_contents()
 {
-    $columnNames = array(
-            'year'        => null,
-            'firstName'   => null,
-            'lastName'    => null,
-            'memberLevel' => null
-        );
-    $HonorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_csv_file_path'), $columnNames);
-    $content = honor_roll_html($HonorCSV->getArray());
+    // Make sure the path has been set. Warn them if it is not.
+    if (variable_get('honor_roll_csv_file_path') == null) {
+        drupal_set_message(t('The CSV file path is not set. This needs to be set in the Honor Roll module settings.'), 'error');
+    }
+    
+    // Check cache here.
+    if ($cached = cache_get('honor_roll_data', 'honor_roll_cache')) {
+        $content = $cached->data;
+    } else {
+        $columnNames = array(
+                'year'        => null,
+                'firstName'   => null,
+                'lastName'    => null,
+                'memberLevel' => null
+            );
+        $HonorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_csv_file_path'), $columnNames);
+        $content = honor_roll_html($HonorCSV->getArray());
+
+        // Set cache
+        cache_set('honor_roll_data', $content, $bin = 'honor_roll_cache', time() + 60*60); // Cache is set to 1 hour.
+    }
     return $content;
 }
 

@@ -40,7 +40,7 @@ class HonorRollCSV
      */
     public function getArray()
     {
-        if ($this->testFileExists($this->filePath)) {
+        if ($this->testFileIsReadable($this->filePath)) {
             if (($handle = fopen($this->filePath, "r")) !== false) {
                 $lineCount = 0;
                 while (($data = fgetcsv($handle, 1000, ",")) !== false) {
@@ -58,7 +58,7 @@ class HonorRollCSV
             }
             return $this->csvDataArray;
         } else {
-            error_log("Honor Roll CSV file doesn't exist or doesn't have read permission.", 0);
+            error_log("Honor Roll: CSV file doesn't exist or doesn't have read permission.", 0);
             return false;
         }
     }
@@ -71,18 +71,6 @@ class HonorRollCSV
     public function getFilePath()
     {
         return $this->filePath;
-    }
-
-    /**
-     * Test if the file exists
-     * 
-     * @param  string $filePath path to file
-     * @return boolean          Exists
-     */
-    private function testFileExists($filePath)
-    {
-        $fileExists = file_exists($filePath);
-        return $fileExists;
     }
 
     /**

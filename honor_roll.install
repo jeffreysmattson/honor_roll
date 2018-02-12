@@ -1,0 +1,29 @@
+<?php
+
+function honor_roll_schema()
+{
+    $schema['honor_roll_cache'] = array(
+      'description' => 'The table for honor roll data, for caching purposes.',
+      'fields' => array(
+        `cid` => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => true,
+          'default' => ''
+        ),
+        `data` => array(
+          'type' => 'longblob'
+        ),
+        `expire` => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => true,
+          'default' => 0
+        ),
+      ),
+      'primary key' => array(
+        'cid',
+      ),
+    );
+    return $schema;
+}
