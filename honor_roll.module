@@ -114,7 +114,7 @@ function honor_roll_contents()
 {
     // Make sure the path has been set. Warn them if it is not.
     if (variable_get('honor_roll_csv_file_path') == null) {
-        drupal_set_message(t('The CSV file path is not set. This needs to be set in the Honor Roll module settings.'), 'error');
+        drupal_set_message(t('The CSV file path is not set. This needs to be set in the Honor Roll module settings.'), 'warning');
     }
     
     // Check cache here.
@@ -141,6 +141,10 @@ function honor_roll_contents()
  */
 function honor_roll_html($arrayData)
 {
+    if (!$arrayData) {
+        return;
+    }
+
     $arrayYears = array();
 
     // Pull the years.
@@ -164,4 +168,3 @@ function honor_roll_html($arrayData)
     $content .= '</div>';
     return $content;
 }
-
