@@ -1,0 +1,34 @@
+{
+  "name": "honor_roll",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.23.6",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-install": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-size": "^3.0.0",
+    "gulp-soften": "0.0.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^5.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeffreysmattson/honor_roll.git"
+  },
+  "author": "Jeff Mattson",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/jeffreysmattson/honor_roll/issues"
+  },
+  "homepage": "https://github.com/jeffreysmattson/honor_roll#readme"
+}
