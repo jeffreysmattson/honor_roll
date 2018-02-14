@@ -57,7 +57,7 @@ function honor_roll_admin()
         '#default_value' => variable_get('honor_roll_graduate_csv_file_path'),
         '#size' => 50,
         '#maxlength' => 200,
-        '#description' => "The file path to the CSV file containing the graduate honor roll data.<br>This file is read once a day and the contents cached.<br><br>"."Current directory: ".$currentPath,
+        '#description' => "The file path to the CSV file containing the graduate honor roll data.<br>This file is read once a day and the contents cached.<br><br>"."Example: ".$currentPath."/example.csv",
         '#required' => true,
     );
 
@@ -68,7 +68,7 @@ function honor_roll_admin()
         '#default_value' => variable_get('honor_roll_undergraduate_csv_file_path'),
         '#size' => 50,
         '#maxlength' => 200,
-        '#description' => "The file path to the CSV file containing the undergraduate honor roll data.<br>This file is read once a day and the contents cached.<br><br>"."Current directory: ".$currentPath,
+        '#description' => "The file path to the CSV file containing the undergraduate honor roll data.<br>This file is read once a day and the contents cached.<br><br>"."Example: ".$currentPath."/example.csv",
         '#required' => true,
     );
     return system_settings_form($form);
@@ -113,11 +113,11 @@ function honor_roll_block_view($delta = '')
     switch ($delta) {
         case 'honor_roll_graduates':
             $block['subject'] = t('Honor Roll');
-            $block['content'] = honor_roll_contents();
+            $block['content'] = honor_roll_graduate_contents();
             break;
         case 'honor_roll_undergraduates':
             $block['subject'] = t('Honor Roll');
-            $block['content'] = honor_roll_contents();
+            $block['content'] = honor_roll_undergraduate_contents();
             break;
     }
     return $block;
@@ -136,15 +136,15 @@ function honor_roll_flush_caches()
 }
 
 /**
- * Build the honor roll element structure.
+ * Build the graduate honor roll element structure.
  *
  * @return html
  */
-function honor_roll_contents()
+function honor_roll_graduate_contents()
 {
     // Make sure the path has been set. Warn them if it is not.
-    if (variable_get('honor_roll_csv_file_path') == null) {
-        drupal_set_message(t('The CSV file path is not set. This needs to be set in the Honor Roll module settings.'), 'warning');
+    if (variable_get('honor_roll_graduate_csv_file_path') == null) {
+        drupal_set_message(t('The CSV file path is not set. This needs to be set in the Graduate Honor Roll module settings.'), 'warning');
     }
     
     // Check cache here.
@@ -157,11 +157,42 @@ function honor_roll_contents()
                 'lastName'    => null,
                 'memberLevel' => null
             );
-        $HonorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_csv_file_path'), $columnNames);
+        $HonorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_graduate_csv_file_path'), $columnNames);
         $content = honor_roll_html($HonorCSV->getArray());
 
         // Set cache
         cache_set('honor_roll_data', $content, $bin = 'honor_roll_cache', time() + 60*60); // Cache is set to 1 hour.
+    }
+    return $content;
+}
+
+/**
+ * Build the undergraduate honor roll element structure.
+ *
+ * @return html
+ */
+function honor_roll_undergraduate_contents()
+{
+    // Make sure the path has been set. Warn them if it is not.
+    if (variable_get('honor_roll_undergraduate_csv_file_path') == null) {
+        drupal_set_message(t('The CSV file path is not set. This needs to be set in the Undergraduate Honor Roll module settings.'), 'warning');
+    }
+    
+    // Check cache here.
+    if ($cached = cache_get('undergrad_honor_roll_data', 'honor_roll_cache')) {
+          $content = $cached->data;
+    } else {
+        $columnNames = array(
+                'year'        => null,
+                'firstName'   => null,
+                'lastName'    => null,
+                'memberLevel' => null
+            );
+        $UnderHonorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_undergraduate_csv_file_path'), $columnNames);
+        $content = honor_roll_html($UnderHonorCSV->getArray());
+
+        // Set cache
+        cache_set('undergrad_honor_roll_data', $content, $bin = 'honor_roll_cache', time() + 60*60); // Cache is set to 1 hour.
     }
     return $content;
 }
