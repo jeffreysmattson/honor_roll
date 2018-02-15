@@ -1,5 +1,5 @@
 core = "7.x"
 description = "Honor Roll"
 name = "Honor Roll"
-
+files[] = honor_roll.test
 configure = admin/settings/honor_roll

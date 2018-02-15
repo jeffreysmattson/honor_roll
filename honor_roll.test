@@ -1,0 +1,100 @@
+<?php
+/**
+ * Tests the functionality of the Simpletest example content type.
+ *
+ * Command to run tests: php run-tests.sh --verbose --color --class SimpletestHonorRollTestCase
+ */
+class SimpletestHonorRollTestCase extends DrupalWebTestCase {
+  protected $privileged_user;
+
+  public static function getInfo() {
+    // Note: getInfo() strings are not translated with t().
+    return array(
+      'name' => 'Honor Roll Test',
+      'description' => 'Ensure that the Honor Roll Module is functioning like it should.',
+      'group' => 'Module',
+    );
+  }
+
+  public function setUp() {
+    // Enable any modules required for the test. This should be an array of
+    // module names.
+    parent::setUp(array('honor_roll'));
+    
+    $perms = user_role_permissions(array(array_search('administrator', user_roles()) => 'administrator'));
+    $perms = array_keys($perms[array_search('administrator', user_roles())]);
+
+    // Create and log in our privileged user.
+    $this->privileged_user = $this->drupalCreateUser($perms);
+
+    $this->drupalLogin($this->privileged_user);
+
+    // Print the user array.
+    //$this->pass(var_export($this->privileged_user, TRUE));
+
+  }
+
+  /**
+   * Create user with specific role.
+   * 
+   * @param  [type] $role [description]
+   * @return [type]       [description]
+   */
+  public function drupalCreateUserWithRole($role) {
+    // Get all of the roles in the system.
+    $roles = user_roles();
+
+    // Find the index for the role we want to assign to the user.
+    $index = array_search($role, $roles);
+
+    // Get the permissions for the role.
+    $permissions = user_role_permissions(array(array_search($role, $roles) => $role));
+
+    // Create the user with the permissions.
+    $user = $this->drupalCreateUser(array_keys($permissions[$index]));
+
+    // Assign the role.
+    $user->roles[$index] = $role;
+
+    // Return the user we have created.
+    return user_save($user);
+  }
+
+   /**
+    * Tests the settings input.
+    */
+  public function testConfigurationFormCreate() {
+
+
+    // Print the user array.
+    //$this->pass(var_export($this->privileged_user, TRUE));
+
+    $edit = array(
+            'honor_roll_undergraduate_csv_file_path' => $this->randomName(8),
+            'honor_roll_graduate_csv_file_path' => $this->randomName(16)
+          );
+
+    $this->drupalPost(
+            'admin/settings/honor_roll',
+            $edit,
+            'Save configuration'
+          );
+    
+    // It this the access denied page?
+    $this->assertNoText('Access denied', "Did not get the Access Denied page.", 'Other');
+
+    // It the form actually showing.
+    $this->assertText('The file path to the CSV file containing the graduate honor roll data.', "The correct html page is showing.", 'Other');
+
+    // Check if the configurations have saved by looking for the saved text.
+    $this->assertText('The configuration options have been saved.', "The configuration options have been saved text is visable.", 'browser');
+
+    // Did the entered data show in the field after saving?
+    $this->assertFieldById('edit-honor-roll-graduate-csv-file-path', $edit['honor_roll_graduate_csv_file_path'], "The graduate field was detected and contains the correct value", 'browser');
+
+    // Did the entered data show in the field after saving?
+    $this->assertFieldById('edit-honor-roll-undergraduate-csv-file-path', $edit['honor_roll_undergraduate_csv_file_path'], "The undergraduate field was detected and contains the correct value.", 'browser');
+
+    
+  }
+}

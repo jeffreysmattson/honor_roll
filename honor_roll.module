@@ -87,7 +87,7 @@ function honor_roll_menu()
         'description' => 'Honor Roll CSV file path.',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('honor_roll_admin'),
-        'access arguments' => array('administer honor roll settings'),
+        'access arguments' => array('administer site configuration'),
         'type' => MENU_SUGGESTED_ITEM,
     );
     return $items;
@@ -121,6 +121,20 @@ function honor_roll_block_view($delta = '')
             break;
     }
     return $block;
+}
+
+/**
+ * Set up permission for the Honor Roll module.
+ * 
+ * @return array
+ */
+function honor_roll_permission() {
+  return array(
+    'administer honor_roll' => array(
+      'title' => t('Administer honor roll'),
+      'description' => t('Perform administration tasks for the honor roll module.'),
+    ),
+  );
 }
 
 /**
