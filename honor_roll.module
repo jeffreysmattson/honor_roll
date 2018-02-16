@@ -8,6 +8,8 @@
  * @author Jeff Mattson <jeff@layer7web.com>
  */
 
+use HonorRoll\HonorRollCSV;
+
 /* CSV class for reading CSV */
 require_once dirname(__FILE__) . '/classes/HonorRollCSV.php';
 
@@ -208,7 +210,7 @@ function honor_roll_graduate_contents() {
       'lastName'    => NULL,
       'memberLevel' => NULL
     );
-    $honorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_graduate_csv_file_path'), $columnNames);
+    $honorCSV = new HonorRollCSV(variable_get('honor_roll_graduate_csv_file_path'), $columnNames);
     $content = honor_roll_html($honorCSV->getArray());
 
     // Set cache. Cache is set to 1 hour.
@@ -240,7 +242,7 @@ function honor_roll_undergraduate_contents() {
       'lastName'    => NULL,
       'memberLevel' => NULL
     );
-    $underHonorCSV = new HonorRoll\HonorRollCSV(variable_get('honor_roll_undergraduate_csv_file_path'), $columnNames);
+    $underHonorCSV = new HonorRollCSV(variable_get('honor_roll_undergraduate_csv_file_path'), $columnNames);
     $content = honor_roll_html($underHonorCSV->getArray());
 
     // Set cache. Cache is set to 1 hour.
