@@ -23,6 +23,7 @@ require_once dirname(__FILE__) . '/classes/HonorRollCSV.php';
  *   Associative array of added blocks.
  */
 function honor_roll_block_info() {
+
   // Graduate block.
   $blocks['honor_roll_graduates'] = array(
         'info' => t('Honor Roll Graduates'),
