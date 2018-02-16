@@ -1,12 +1,19 @@
 <?php
+
 /**
  * Tests the functionality of the Simpletest example content type.
  *
- * Command to run tests: php run-tests.sh --verbose --color --class SimpletestHonorRollTestCase
+ * Command to run tests: php run-tests.sh --verbose --color --class SimpletestHonorRollTestCase.
  */
 class SimpletestHonorRollTestCase extends DrupalWebTestCase {
-  protected $privileged_user;
+  protected $privilegedUser;
 
+  /**
+   * Describe the test for this module.
+   *
+   * @return array
+   *   Set up the desctiption and name for the tests.
+   */
   public static function getInfo() {
     // Note: getInfo() strings are not translated with t().
     return array(
@@ -16,29 +23,35 @@ class SimpletestHonorRollTestCase extends DrupalWebTestCase {
     );
   }
 
+  /**
+   * Set up the user and give them all the permisions.
+   */
   public function setUp() {
-    // Enable any modules required for the test. This should be an array of
-    // module names.
+
+    // Enable any modules required for the test. This should be an array of module names.
     parent::setUp(array('honor_roll'));
-    
+
     $perms = user_role_permissions(array(array_search('administrator', user_roles()) => 'administrator'));
     $perms = array_keys($perms[array_search('administrator', user_roles())]);
 
     // Create and log in our privileged user.
-    $this->privileged_user = $this->drupalCreateUser($perms);
+    $this->privilegedUser = $this->drupalCreateUser($perms);
 
-    $this->drupalLogin($this->privileged_user);
+    $this->drupalLogin($this->privilegedUser);
 
     // Print the user array.
-    //$this->pass(var_export($this->privileged_user, TRUE));
+    /* $this->pass(var_export($this->privilegedUser, TRUE)); */
 
   }
 
   /**
    * Create user with specific role.
-   * 
-   * @param  [type] $role [description]
-   * @return [type]       [description]
+   *
+   * @param string $role
+   *   The name of the roll we what the user to be created with.
+   *
+   * @return object
+   *   The created user object is returned.
    */
   public function drupalCreateUserWithRole($role) {
     // Get all of the roles in the system.
@@ -60,26 +73,25 @@ class SimpletestHonorRollTestCase extends DrupalWebTestCase {
     return user_save($user);
   }
 
-   /**
-    * Tests the settings input.
-    */
+  /**
+   * Tests the settings input.
+   */
   public function testConfigurationFormCreate() {
 
-
     // Print the user array.
-    //$this->pass(var_export($this->privileged_user, TRUE));
+    /* $this->pass(var_export($this->privilegedUser, TRUE)); */
 
     $edit = array(
-            'honor_roll_undergraduate_csv_file_path' => $this->randomName(8),
-            'honor_roll_graduate_csv_file_path' => $this->randomName(16)
-          );
+      'honor_roll_undergraduate_csv_file_path' => $this->randomName(8),
+      'honor_roll_graduate_csv_file_path' => $this->randomName(16)
+    );
 
     $this->drupalPost(
-            'admin/settings/honor_roll',
-            $edit,
-            'Save configuration'
-          );
-    
+      'admin/settings/honor_roll',
+      $edit,
+      'Save configuration'
+    );
+
     // It this the access denied page?
     $this->assertNoText('Access denied', "Did not get the Access Denied page.", 'Other');
 
@@ -94,7 +106,6 @@ class SimpletestHonorRollTestCase extends DrupalWebTestCase {
 
     // Did the entered data show in the field after saving?
     $this->assertFieldById('edit-honor-roll-undergraduate-csv-file-path', $edit['honor_roll_undergraduate_csv_file_path'], "The undergraduate field was detected and contains the correct value.", 'browser');
-
-    
   }
+
 }
