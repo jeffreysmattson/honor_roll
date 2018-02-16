@@ -39,9 +39,6 @@ class SimpletestHonorRollTestCase extends DrupalWebTestCase {
 
     $this->drupalLogin($this->privilegedUser);
 
-    // Print the user array.
-    /* $this->pass(var_export($this->privilegedUser, TRUE)); */
-
   }
 
   /**
