@@ -65,7 +65,8 @@ function honor_roll_admin() {
     '#size' => 50,
     '#maxlength' => 200,
     '#description' => "The file path to the CSV file containing the graduate honor roll data.<br>This file is read once a day and the contents cached.<br><br>" . "Example: " . $currentPath . "/example.csv",
-    '#required' => TRUE
+    '#required' => FALSE,
+    '#element_validate' => array('honor_roll_form_validate')
   );
 
   // Undergraduate setting.
@@ -76,33 +77,18 @@ function honor_roll_admin() {
     '#size' => 50,
     '#maxlength' => 200,
     '#description' => "The file path to the CSV file containing the undergraduate honor roll data.<br>This file is read once a day and the contents cached.<br><br>" . "Example: " . $currentPath . "/example.csv",
-    '#required' => TRUE,
+    '#required' => FALSE,
+    '#element_validate' => array('honor_roll_form_validate')
   );
   return system_settings_form($form);
 }
 
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * Adds validation of block configuration custom fields.
- * TODO: Build this so the have to enter valid urls.
- */
-function mymodule_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
-  if ($form['module']['#value'] == 'mymodule') {
-    $form['#validate'][] = 'mymodule_block_validate';
-  }
-}
+function honor_roll_form_validate($element){
 
-/**
- * Form validation callback of block configuration.
- */
-function mymodule_block_validate(&$form, $form_state) {
-  $delta = $form['delta']['#value'];
-  if ($delta == 'myblock') {
-    if (!valid_url($form_state['values']['website'], TRUE)) {
-      form_set_error('website', t('The value provided for %field is not a valid URL.', array('%field' => 'Website')));
+    // Is the file path readable and valid?
+    if(!is_readable($element['#value'])) {
+        form_set_error($element['#name'], 'This path is not valid or the file is not readable.');
     }
-  }
 }
 
 /**
@@ -194,6 +180,7 @@ function honor_roll_flush_caches() {
  *   Creates the html to build the accordions for display on the page.
  */
 function honor_roll_graduate_contents() {
+
   // Make sure the path has been set. Warn them if it is not.
   if (variable_get('honor_roll_graduate_csv_file_path') == NULL) {
     drupal_set_message(t('The CSV file path is not set. This needs to be set in the Graduate Honor Roll module settings.'), 'warning');
@@ -226,6 +213,7 @@ function honor_roll_graduate_contents() {
  *   Creates the html do display on the page.
  */
 function honor_roll_undergraduate_contents() {
+
   // Make sure the path has been set. Warn them if it is not.
   if (variable_get('honor_roll_undergraduate_csv_file_path') == NULL) {
     drupal_set_message(t('The CSV file path is not set. This needs to be set in the Undergraduate Honor Roll module settings.'), 'warning');
@@ -253,6 +241,9 @@ function honor_roll_undergraduate_contents() {
 
 /**
  * Create the html accordions.
+ *
+ * @return  html
+ *   Creates and returns the actual accordions.
  */
 function honor_roll_html($arrayData) {
   if (!$arrayData) {

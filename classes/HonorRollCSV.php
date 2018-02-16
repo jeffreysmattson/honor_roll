@@ -18,7 +18,7 @@ class HonorRollCSV
 
     /**
      * The constructor.
-     * 
+     *
      * @param string $filePath   The file path to the CSV
      * @param int    $colNames   Column names, associative array key values.
      * @param int    $length     Must be longer than the longest line in the CSV
@@ -44,7 +44,6 @@ class HonorRollCSV
             if (($handle = fopen($this->filePath, "r")) !== false) {
                 $lineCount = 0;
                 while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                    
                     $x = 0;
                     foreach ($this->colNamses as $key => $value) {
                         $this->csvDataArray[$lineCount][$key] = $data[$x];
@@ -65,7 +64,7 @@ class HonorRollCSV
 
     /**
      * Get the file path of this object.
-     * 
+     *
      * @return string the current file path.
      */
     public function getFilePath()
@@ -75,7 +74,7 @@ class HonorRollCSV
 
     /**
      * Test if the file exists and is readable
-     * 
+     *
      * @param  string $filePath path to file
      * @return boolean          Exists and is readable.
      */
