@@ -7,7 +7,7 @@ function honor_roll_uninstall()
 {
     // Remove tables.
     drupal_uninstall_schema('honor_roll_cache');
-    
+
     // Remove variables
     variable_del('honor_roll_graduate_csv_file_path');
     variable_del('honor_roll_undergraduate_csv_file_path');
@@ -15,7 +15,7 @@ function honor_roll_uninstall()
 
 /**
  * Create the honor roll data table.
- * 
+ *
  * @return array
  */
 function honor_roll_schema()

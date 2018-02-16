@@ -1,3 +1,4 @@
-jQuery(function(){
-    jQuery( "#accordion" ).accordion();
+jQuery(function () {
+  "use strict";
+  jQuery("#accordion").accordion();
 });
