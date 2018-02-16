@@ -1,59 +1,64 @@
 <?php
 
 /**
-* Implementation of hook_uninstall().
-*/
-function honor_roll_uninstall()
-{
-    // Remove tables.
-    drupal_uninstall_schema('honor_roll_cache');
+ * @file
+ * Uninstall and Create table to store data.
+ */
 
-    // Remove variables
-    variable_del('honor_roll_graduate_csv_file_path');
-    variable_del('honor_roll_undergraduate_csv_file_path');
+/**
+ * Implementation of hook_uninstall().
+ */
+function honor_roll_uninstall() {
+
+  // Remove tables.
+  drupal_uninstall_schema('honor_roll_cache');
+
+  // Remove variables.
+  variable_del('honor_roll_graduate_csv_file_path');
+  variable_del('honor_roll_undergraduate_csv_file_path');
 }
 
 /**
  * Create the honor roll data table.
  *
  * @return array
+ *   Returns the array scheme of the table to create.
  */
-function honor_roll_schema()
-{
-    $schema['honor_roll_cache'] = array(
-      'description' => 'The table for honor roll data, for caching purposes.',
-      'fields' => array(
-          'cid' => array(
-              'type' => 'varchar',
-              'length' => 255,
-              'not null' => true,
-          ),
-          'data' => array(
-              'type' => 'blob',
-              'size' => 'big',
-              'not null' => true,
-          ),
-          'expire' => array(
-              'type' => 'int',
-              'length' => 11,
-              'not null' => true,
-              'default' => 0,
-          ),
-          'created' => array(
-              'type' => 'int',
-              'length' => 11,
-              'not null' => true,
-              'default' => 0,
-          ),
-          'serialized' => array(
-              'type' => 'int',
-              'size' => 'small',
-              'length' => 6,
-              'not null' => true,
-              'default' => 0,
-          ),
+function honor_roll_schema() {
+  $schema['honor_roll_cache'] = array(
+    'description' => 'The table for honor roll data, for caching purposes.',
+    'fields' => array(
+      'cid' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE
       ),
-      'primary key' => array('cid'),
-    );
-    return $schema;
+      'data' => array(
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'expire' => array(
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'serialized' => array(
+        'type' => 'int',
+        'size' => 'small',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('cid'),
+  );
+  return $schema;
 }
